@@ -7,6 +7,23 @@ description: >
   "security coverage". Background: Swapnil used OWASP ZAP and bandit at F5 Networks.
 ---
 
+## Auto-run vs intake
+
+**If a spec exists in `specs/` → run immediately, no questions.**
+**Only ask if genuinely blocked:**
+
+| Situation | Ask |
+|---|---|
+| No spec found anywhere | "Paste your spec, give a path, or provide a URL" (one ask) |
+| Multiple specs in `specs/` | "Which spec should I use?" (list them) |
+| Mode unclear for REST | "Live endpoint available, or mock mode?" (one ask) |
+| Everything clear | Never prompt — just generate |
+
+Never ask more than one question. Never re-ask something already answered in the conversation.
+
+---
+
+
 # API Security Builder Skill
 
 ## Who this is for
@@ -350,7 +367,8 @@ def test_static_security_scan():
         capture_output=True, text=True
     )
     high_severity = result.stdout.count("Severity: High")
-    assert high_severity == 0, f"Bandit found {high_severity} high severity issues:\n{result.stdout}"
+    assert high_severity == 0, f"Bandit found {high_severity} high severity issues:
+{result.stdout}"
 ```
 
 ---

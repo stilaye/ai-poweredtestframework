@@ -7,6 +7,23 @@ description: >
   "test this service definition". Accepts .proto file uploads or pasted proto text.
 ---
 
+## Auto-run vs intake
+
+**If a spec exists in `specs/` → run immediately, no questions.**
+**Only ask if genuinely blocked:**
+
+| Situation | Ask |
+|---|---|
+| No spec found anywhere | "Paste your spec, give a path, or provide a URL" (one ask) |
+| Multiple specs in `specs/` | "Which spec should I use?" (list them) |
+| Mode unclear for REST | "Live endpoint available, or mock mode?" (one ask) |
+| Everything clear | Never prompt — just generate |
+
+Never ask more than one question. Never re-ask something already answered in the conversation.
+
+---
+
+
 # gRPC Pytest Builder Skill
 
 ## Who this is for
