@@ -1,9 +1,13 @@
 ---
 name: e2e-flow-builder
-description: "Use this agent when given a user journey description spanning multiple services and asked to generate end-to-end tests. Examples: <example>Context: User describes a multi-service flow. user: 'Write e2e tests for login then checkout then payment' assistant: 'I will use the e2e-flow-builder agent to generate chained pytest tests with shared FlowState and cleanup.' <commentary>Multi-service user journey — invoke e2e-flow-builder.</commentary></example>"
-color: cyan
+description: >
+  Generate end-to-end functional test suites from user flow descriptions that span
+  multiple services. Trigger for "write e2e tests", "end to end test for this flow",
+  "test this user journey", "multi-service test", "integration flow test",
+  "test across services", or when given a flow description involving more than one
+  service/API. Accepts plain English flow description + service map (OpenAPI/proto/GraphQL).
+  Generates chained pytest tests with shared state management and cleanup.
 ---
-
 
 # E2E Flow Builder Skill
 

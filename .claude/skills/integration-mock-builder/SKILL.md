@@ -1,9 +1,13 @@
 ---
 name: integration-mock-builder
-description: "Use this agent when asked to mock or stub downstream services for integration testing. Examples: <example>Context: User needs to test without a live downstream service. user: 'I need to mock the payment service for integration tests' assistant: 'I will use the integration-mock-builder agent to generate WireMock stubs and vcrpy cassettes.' <commentary>Mocking/stubbing request — invoke integration-mock-builder.</commentary></example>"
-color: yellow
+description: >
+  Generate WireMock stubs or pytest-httpserver fixtures for out-of-process API mocking
+  at the integration test level. Trigger for "mock this service", "stub this API",
+  "WireMock setup", "I don't have a live endpoint", "mock downstream service",
+  "integration test without real server", "record and replay". Background: Swapnil
+  used WireMock at Experian for consumer credit API mocking.
+  Use this for integration-level mocking. For unit-level (requests/httpx), use openapi-pytest-builder mock mode.
 ---
-
 
 # Integration Mock Builder Skill
 

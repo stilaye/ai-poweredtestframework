@@ -1,9 +1,11 @@
 ---
 name: grpc-pytest-builder
-description: "Use this agent when given a gRPC Protocol Buffer (.proto) file and asked to generate pytest tests. Examples: <example>Context: User has a .proto file. user: 'Write pytest tests for this proto file' assistant: 'I will use the grpc-pytest-builder agent to generate a pytest suite with stub compilation and gRPC status code coverage.' <commentary>Proto file input — invoke grpc-pytest-builder.</commentary></example>"
-color: purple
+description: >
+  Generate a ready-to-run pytest test suite from a gRPC Protocol Buffer (.proto) file.
+  Trigger when given a .proto file or pasted proto content and asked to generate tests.
+  Also trigger for "write gRPC tests", "test this proto", "generate pytest for protobuf",
+  "test this service definition". Accepts .proto file uploads or pasted proto text.
 ---
-
 
 # gRPC Pytest Builder Skill
 

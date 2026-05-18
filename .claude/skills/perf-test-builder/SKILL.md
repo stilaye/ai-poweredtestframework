@@ -1,9 +1,12 @@
 ---
 name: perf-test-builder
-description: "Use this agent when asked to generate performance or load tests using Locust. Examples: <example>Context: User wants load tests. user: 'Write load tests for our checkout flow' assistant: 'I will use the perf-test-builder agent to generate journey-based Locust tests with smoke, load, and stress profiles.' <commentary>Performance testing request — invoke perf-test-builder.</commentary></example>"
-color: orange
+description: >
+  Generate Locust-based performance test files modeled on user journeys, not individual
+  endpoints. Trigger for "write performance tests", "load test this API", "generate Locust",
+  "stress test", "benchmark this API", "perf tests". Requires both a spec (OpenAPI/proto/
+  GraphQL) AND a description of key user journeys. Always defaults to Locust (Python).
+  Generates JMeter .jmx only if explicitly requested.
 ---
-
 
 # Perf Test Builder Skill
 

@@ -1,92 +1,110 @@
 # AI-Powered Test Framework
 
-An AI-native test automation framework combining **Claude Code subagents** for interactive development and **reusable skill prompts** for programmatic test generation — covering the full testing pyramid across REST, gRPC, and GraphQL APIs.
+An AI-native test automation framework using **Claude Code skills** for domain expertise and **subagents** for parallel execution — covering the full testing pyramid across REST, gRPC, and GraphQL APIs.
 
-Built by [Swapnil Tilaye](https://linkedin.com/in/swapniltilaye) — Sr. SDET | GitHub: [github.com/stilaye](https://github.com/stilaye)
-
----
-
-## Two ways to use this framework
-
-| | Claude Code Agents | Skills (Prompt Templates) |
-|---|---|---|
-| **Location** | `.claude/agents/` | `skills/` |
-| **Who calls it** | Claude Code — invoked automatically based on context | Your code — loaded programmatically as Claude API system prompts |
-| **Best for** | Interactive development: writing tests while coding | Autonomous generation: CI/CD pipelines, CLI tools, agentic workflows |
-| **Requires** | Claude Code CLI | Anthropic API key |
-| **How to trigger** | Describe the task in Claude Code — it picks the right agent | `skill = Path("skills/openapi-pytest-builder.md").read_text()` |
+Built by [Swapnil Tilaye](https://linkedin.com/in/swapniltilaye) — Sr. SDET | [github.com/stilaye](https://github.com/stilaye)
 
 ---
 
-## Claude Code Agents (`.claude/agents/`)
+## `.claude/` folder — quick reference
 
-Use these when working interactively inside this repo with Claude Code. Claude detects your intent and invokes the right agent automatically.
-
-### Existing agents (project-aware)
-
-| Agent | When Claude invokes it |
-|---|---|
-| `framework-architect` | "Refactor this framework", "Make this more modular" |
-| `pytest-test-developer` | "Write tests for these endpoints", "Review my test coverage" |
-| `test-gap-analyzer` | "What am I missing?", "Analyze coverage gaps against this spec" |
-| `test-results-analyzer` | "Why are these tests failing?", "Analyze this test run" |
-
-### New agents (API test generation)
-
-| Agent | When Claude invokes it | Color |
-|---|---|---|
-| `openapi-pytest-builder` | "Generate tests from this openapi.yaml/swagger.json" | Blue |
-| `grpc-pytest-builder` | "Write pytest for this .proto file" | Purple |
-| `graphql-pytest-builder` | "Generate tests for this GraphQL schema" | Pink |
-| `contract-test-builder` | "Write contract tests between service A and B" | Green |
-| `perf-test-builder` | "Write load tests for this flow" | Orange |
-| `api-security-builder` | "Generate OWASP security tests for this API" | Red |
-| `integration-mock-builder` | "Mock this downstream service for integration tests" | Yellow |
-| `e2e-flow-builder` | "Write e2e tests for login to checkout to payment" | Cyan |
-
-### How to use agents
-
-```bash
-# Install Claude Code
-npm install -g @anthropic-ai/claude-code
-
-# Clone and open this repo
-git clone https://github.com/stilaye/ai-poweredtestframework
-cd ai-poweredtestframework
-claude  # agents are auto-loaded from .claude/agents/
-
-# Then just describe what you need:
-# "Generate pytest tests from docs/openapi.yaml"
-# "Write OWASP security tests for the payment API"
-# "Create e2e tests for the checkout journey"
+```
+.claude/
+  agents/    ← Subagents: isolated workers spawned for specialist tasks
+  skills/    ← Skills: domain expertise injected into current context
+  commands/  ← Slash commands: /deploy, /test, /review etc
+  rules/     ← Scoped rules applied by file path or context
+  hooks/     ← Event hooks: run logic on session start, file save etc
 ```
 
 ---
 
-## Skills — Prompt Templates (`skills/`)
+## Agents vs Skills — know the difference
 
-Use these when you want programmatic test generation — loaded by your framework, CLI, or CI pipeline as Claude API system prompts.
+| | Agents (`.claude/agents/`) | Skills (`.claude/skills/`) |
+|---|---|---|
+| **What** | Specialist subagent with its own isolated context | Reusable instruction set injected into current context |
+| **Format** | Single `.md` file | Directory with `SKILL.md` + optional scripts/assets |
+| **Context** | Runs isolated — compresses findings, returns to main session | Runs inline — same session, no isolation |
+| **Invoked by** | Claude spawns it as a parallel worker | Claude loads it on demand when relevant |
+| **Tool access** | Restricted — you define which tools it can use | Inherits current session tools |
+| **Best for** | "Do this task for me" — active work | "Know how to do this" — domain expertise |
+| **Example** | `framework-architect` refactors your code | `openapi-pytest-builder` knows how to generate tests |
 
-### Available skills
+**One-liner:** Agents *do* work. Skills *know* how to do work.
 
-| Skill file | Spec type | Test type | Key output |
+### When to use which
+
+```
+Need Claude to actively perform a task in isolation?
+  → Agent  (e.g. "review my PR", "analyze test gaps")
+
+Need Claude to apply domain expertise to what you're already doing?
+  → Skill  (e.g. "generate tests from this spec", "write security tests")
+
+Need a repeatable slash command workflow?
+  → Command  (e.g. /generate-tests, /security-scan)
+
+Need to enforce rules on specific file types or paths?
+  → Rule
+
+Need to trigger logic on events (session start, file change)?
+  → Hook
+```
+
+---
+
+## Agents (`.claude/agents/`)
+
+Active specialist workers. Claude spawns these in isolated context when you need focused, parallel execution.
+
+| Agent | What it does |
+|---|---|
+| `framework-architect` | Refactors and improves the test framework structure |
+| `pytest-test-developer` | Writes pytest test cases from OpenAPI specs |
+| `test-gap-analyzer` | Analyzes coverage gaps against specs and requirements |
+| `test-results-analyzer` | Diagnoses failing tests and flakiness patterns |
+
+---
+
+## Skills (`.claude/skills/`)
+
+Domain expertise Claude loads automatically when relevant. Each skill is a directory containing a `SKILL.md` file.
+
+| Skill | Spec input | Test type | Key output |
 |---|---|---|---|
-| `openapi-pytest-builder.md` | OpenAPI YAML/JSON | Functional | pytest suite, live + mock mode |
-| `grpc-pytest-builder.md` | `.proto` file | Functional | pytest + gRPC stubs, all status codes |
-| `graphql-pytest-builder.md` | GraphQL SDL | Functional | pytest, queries + mutations + N+1 detection |
-| `contract-test-builder.md` | Any spec | Contract + Drift | Pact consumer/provider + snapshot mode |
-| `perf-test-builder.md` | Any spec + user journey | Performance | Journey-based Locust + 3 load profiles |
-| `api-security-builder.md` | Any spec | Security | OWASP API Top 10, gRPC + GraphQL variants |
-| `integration-mock-builder.md` | Any spec | Mocking | WireMock + vcrpy + pytest-httpserver |
-| `e2e-flow-builder.md` | Multi-spec + user flow | E2E | Chained pytest with FlowState + cleanup |
+| `openapi-pytest-builder` | OpenAPI YAML/JSON | Functional | pytest suite, live + mock mode |
+| `grpc-pytest-builder` | `.proto` file | Functional | pytest + gRPC stubs, all status codes |
+| `graphql-pytest-builder` | GraphQL SDL | Functional | pytest, queries + mutations + N+1 detection |
+| `contract-test-builder` | Any spec | Contract + Drift | Pact consumer/provider + snapshot mode |
+| `perf-test-builder` | Any spec + user journey | Performance | Journey-based Locust + 3 load profiles |
+| `api-security-builder` | Any spec | Security | OWASP API Top 10, REST + gRPC + GraphQL |
+| `integration-mock-builder` | Any spec | Mocking | WireMock + vcrpy + pytest-httpserver |
+| `e2e-flow-builder` | Multi-spec + user flow | E2E | Chained pytest with FlowState + cleanup |
 
-### How to use skills programmatically
+### How skills are triggered in Claude Code
+
+```bash
+claude  # open Claude Code in this repo — skills auto-load
+
+# Then just describe what you need:
+"Generate pytest tests from this openapi.yaml"
+"Write OWASP security tests for the payment API"
+"Create e2e tests for login → checkout → payment flow"
+"Write load tests for the checkout journey"
+```
+
+---
+
+## Skills as prompt templates (`skills/`)
+
+The same skill files also live in the top-level `skills/` folder for **programmatic use** — loaded by your framework or CI pipeline as Claude API system prompts.
 
 ```python
 from pathlib import Path
 import anthropic
 
-client = anthropic.Anthropic()  # uses ANTHROPIC_API_KEY env var
+client = anthropic.Anthropic()  # ANTHROPIC_API_KEY env var
 
 def generate_tests(spec_content: str, skill_name: str) -> str:
     skill = Path(f"skills/{skill_name}.md").read_text()
@@ -108,29 +126,7 @@ tests = generate_tests(Path("proto/payment.proto").read_text(), "grpc-pytest-bui
 tests = generate_tests(Path("schema.graphql").read_text(), "graphql-pytest-builder")
 ```
 
-### E2E flow — multi-spec + user journey
-
-```python
-skill = Path("skills/e2e-flow-builder.md").read_text()
-response = client.messages.create(
-    model="claude-haiku-4-5-20251001",
-    max_tokens=6000,
-    system=skill,
-    messages=[{
-        "role": "user",
-        "content": """
-        Flow: User logs in → searches product → adds to cart → payment charges card
-
-        Services:
-        Auth (OpenAPI): <paste auth spec>
-        Product (OpenAPI): <paste product spec>
-        Payment (gRPC): <paste .proto>
-        """
-    }]
-)
-```
-
-### Use in CI/CD (GitHub Actions)
+### CI/CD (GitHub Actions)
 
 ```yaml
 name: Generate API Tests
@@ -146,7 +142,11 @@ jobs:
       - name: Generate tests
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python scripts/generate_tests.py --spec specs/api.yaml --skill openapi-pytest-builder
+        run: |
+          python scripts/generate_tests.py \
+            --spec specs/api.yaml \
+            --skill skills/openapi-pytest-builder.md \
+            --output tests/generated/
       - name: Commit generated tests
         run: |
           git add tests/generated/
@@ -156,33 +156,18 @@ jobs:
 
 ---
 
-## Decision guide — when to use agents vs skills
+## Spec type → skill mapping
 
 ```
-Writing code interactively in Claude Code?
-  YES → .claude/agents/ — Claude picks the right agent automatically
+.yaml / .json  (OpenAPI)  →  openapi-pytest-builder
+.proto         (gRPC)     →  grpc-pytest-builder
+.graphql / SDL (GraphQL)  →  graphql-pytest-builder
 
-Framework or pipeline calling Claude API directly?
-  YES → skills/ — load the .md file as a system prompt
-
-Using Claude.ai browser or app?
-  YES → Install .skill packages via Settings → Skills
-```
-
----
-
-## Spec type quick reference
-
-```
-.yaml / .json  (OpenAPI)  → openapi-pytest-builder
-.proto         (gRPC)     → grpc-pytest-builder
-.graphql / SDL (GraphQL)  → graphql-pytest-builder
-
-Multi-service user journey → e2e-flow-builder
-Contract validation        → contract-test-builder
-OWASP security coverage    → api-security-builder
-Load / performance tests   → perf-test-builder
-Stub downstream services   → integration-mock-builder
+Multi-service user journey  →  e2e-flow-builder
+Contract validation         →  contract-test-builder
+OWASP security coverage     →  api-security-builder
+Load / performance tests    →  perf-test-builder
+Stub downstream services    →  integration-mock-builder
 ```
 
 ---
@@ -211,23 +196,38 @@ Stub downstream services   → integration-mock-builder
 
 ```
 ai-poweredtestframework/
-├── .claude/
-│   └── agents/                         ← Claude Code subagents (interactive)
-│       ├── framework-architect.md      ← existing
-│       ├── pytest-test-developer.md    ← existing
-│       ├── test-gap-analyzer.md        ← existing
-│       ├── test-results-analyzer.md    ← existing
-│       ├── openapi-pytest-builder.md   ← new
-│       ├── grpc-pytest-builder.md      ← new
-│       ├── graphql-pytest-builder.md   ← new
-│       ├── contract-test-builder.md    ← new
-│       ├── perf-test-builder.md        ← new
-│       ├── api-security-builder.md     ← new
-│       ├── integration-mock-builder.md ← new
-│       └── e2e-flow-builder.md         ← new
 │
-├── skills/                             ← Prompt templates (programmatic)
-│   ├── openapi-pytest-builder.md
+├── .claude/
+│   ├── agents/                         ← Subagents (isolated workers)
+│   │   ├── framework-architect.md
+│   │   ├── pytest-test-developer.md
+│   │   ├── test-gap-analyzer.md
+│   │   └── test-results-analyzer.md
+│   │
+│   ├── skills/                         ← Skills (domain expertise, auto-loaded)
+│   │   ├── openapi-pytest-builder/
+│   │   │   └── SKILL.md
+│   │   ├── grpc-pytest-builder/
+│   │   │   └── SKILL.md
+│   │   ├── graphql-pytest-builder/
+│   │   │   └── SKILL.md
+│   │   ├── contract-test-builder/
+│   │   │   └── SKILL.md
+│   │   ├── perf-test-builder/
+│   │   │   └── SKILL.md
+│   │   ├── api-security-builder/
+│   │   │   └── SKILL.md
+│   │   ├── integration-mock-builder/
+│   │   │   └── SKILL.md
+│   │   └── e2e-flow-builder/
+│   │       └── SKILL.md
+│   │
+│   ├── commands/                       ← Slash commands (e.g. /generate-tests)
+│   ├── rules/                          ← Scoped rules by file path or context
+│   └── hooks/                          ← Event hooks (session start, file save)
+│
+├── skills/                             ← Same skills as flat .md files for
+│   ├── openapi-pytest-builder.md         programmatic use via Claude API
 │   ├── grpc-pytest-builder.md
 │   ├── graphql-pytest-builder.md
 │   ├── contract-test-builder.md

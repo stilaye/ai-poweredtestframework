@@ -1,9 +1,12 @@
 ---
 name: contract-test-builder
-description: "Use this agent when asked to generate consumer-driven contract tests using Pact, or snapshot-based drift detection. Examples: <example>Context: Two microservices need contract validation. user: 'Write contract tests between our auth service and user service' assistant: 'I will use the contract-test-builder agent to generate Pact consumer and provider test files.' <commentary>Multi-service contract validation — invoke contract-test-builder.</commentary></example>"
-color: green
+description: >
+  Generate consumer-driven contract tests using Pact, or snapshot-based drift detection
+  when no prior contract exists. Trigger for "write contract tests", "generate Pact tests",
+  "consumer provider tests", "API contract", "did this API change", "schema drift",
+  "detect breaking changes". Works with REST/OpenAPI, gRPC, or GraphQL APIs.
+  Two modes: Pact mode (two teams, formal contract) or Snapshot mode (solo, drift detection).
 ---
-
 
 # Contract Test Builder Skill
 

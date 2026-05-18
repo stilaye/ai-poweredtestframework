@@ -1,9 +1,11 @@
 ---
 name: api-security-builder
-description: "Use this agent when asked to generate security tests based on OWASP API Top 10. Examples: <example>Context: User wants security test coverage. user: 'Generate OWASP security tests for this API' assistant: 'I will use the api-security-builder agent to generate all 10 OWASP API security test categories.' <commentary>Security testing request — invoke api-security-builder.</commentary></example>"
-color: red
+description: >
+  Generate security-focused API test cases based on OWASP API Top 10 from an OpenAPI spec,
+  .proto file, or GraphQL schema. Trigger for "write security tests", "OWASP tests",
+  "API security testing", "pen test this API", "auth bypass tests", "injection tests",
+  "security coverage". Background: Swapnil used OWASP ZAP and bandit at F5 Networks.
 ---
-
 
 # API Security Builder Skill
 

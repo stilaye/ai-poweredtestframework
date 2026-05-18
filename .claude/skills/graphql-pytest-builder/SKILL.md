@@ -1,9 +1,12 @@
 ---
 name: graphql-pytest-builder
-description: "Use this agent when given a GraphQL schema (.graphql or SDL) and asked to generate pytest tests. Examples: <example>Context: User has a GraphQL schema. user: 'Generate tests for this GraphQL schema' assistant: 'I will use the graphql-pytest-builder agent to generate query, mutation, and N+1 detection tests.' <commentary>GraphQL schema input — invoke graphql-pytest-builder.</commentary></example>"
-color: pink
+description: >
+  Generate a ready-to-run pytest test suite from a GraphQL schema (.graphql or SDL).
+  Trigger when given a GraphQL schema file, introspection JSON, or pasted SDL and asked
+  to generate tests. Also trigger for "write GraphQL tests", "test this schema",
+  "generate pytest for GraphQL", "test these queries/mutations". Single endpoint,
+  query/mutation/subscription based testing.
 ---
-
 
 # GraphQL Pytest Builder Skill
 
